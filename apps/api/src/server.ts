@@ -1,12 +1,22 @@
-import express from 'express'
+import { app } from './app.js'
+import { env } from './config/env.js'
+import { prisma } from './lib/prisma.js'
+import { redis } from './lib/redis.js'
+import { attendanceService } from './modules/attendance/attendance.service.js'
 
-const app = express()
-const port = Number(process.env.PORT ?? 3333)
+const bootstrap = async () => {
+  await prisma.$connect()
+  await redis.ping()
+  await attendanceService.syncQueues()
 
-app.get('/health', (_request, response) => {
-  response.json({ status: 'ok' })
-})
+  app.listen(env.PORT, () => {
+    console.log(`api running on ${env.PORT}`)
+  })
+}
 
-app.listen(port, () => {
-  console.log(`api running on ${port}`)
+bootstrap().catch(async (error) => {
+  console.error(error)
+  await prisma.$disconnect()
+  redis.disconnect()
+  process.exit(1)
 })
