@@ -1,12 +1,12 @@
 import { app } from './app.js'
 import { env } from './config/env.js'
 import { prisma } from './lib/prisma.js'
-import { redis } from './lib/redis.js'
+import queueClient from './lib/queue.js'
 import { attendanceService } from './modules/attendance/attendance.service.js'
 
 const bootstrap = async () => {
   await prisma.$connect()
-  await redis.ping()
+  await queueClient.ping()
   await attendanceService.syncQueues()
 
   app.listen(env.PORT, () => {
@@ -17,6 +17,6 @@ const bootstrap = async () => {
 bootstrap().catch(async (error) => {
   console.error(error)
   await prisma.$disconnect()
-  redis.disconnect()
+  queueClient.disconnect()
   process.exit(1)
 })

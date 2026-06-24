@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id          String       @id @default(cuid())
+  name        String
+  team        Team
+  attendances Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([team])
+}
+
+model Attendance {
+  id              String           @id @default(cuid())
+  customerName    String
+  subject         String
+  team            Team
+  status          AttendanceStatus
+  assignedAgentId String?
+  assignedAgent   Agent?            @relation(fields: [assignedAgentId], references: [id])
+  queuedAt        DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([team, status])
+  @@index([assignedAgentId, status])
+}
+
+enum Team {
+  CARDS
+  LOANS
+  OTHER
+}
+
+enum AttendanceStatus {
+  QUEUED
+  ACTIVE
+  COMPLETED
+}

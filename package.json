@@ -18,7 +18,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:generate": "npm run db:generate --workspace api",
+    "db:generate:local": "npm run db:generate:local --workspace api",
     "db:migrate": "npm run db:migrate --workspace api",
+    "db:push": "npm run db:push --workspace api",
+    "db:push:local": "npm run db:push:local --workspace api",
     "db:seed": "npm run db:seed --workspace api"
   },
   "repository": {

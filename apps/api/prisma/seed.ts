@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { PrismaClient, Team } from '@prisma/client'
 
 const prisma = new PrismaClient()

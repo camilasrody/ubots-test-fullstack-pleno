@@ -2,7 +2,7 @@ import { AttendanceStatus, Team, type Prisma } from '@prisma/client'
 
 import { HttpError } from '../../lib/http-error.js'
 import { prisma } from '../../lib/prisma.js'
-import { redis } from '../../lib/redis.js'
+import queueClient from '../../lib/queue.js'
 import { TEAM_CAPACITY } from '../../shared/types/team.js'
 import { pickAvailableAgent } from '../../shared/utils/agent-capacity.js'
 import {
@@ -43,7 +43,7 @@ class AttendanceService {
         include: attendanceInclude,
       })
 
-      await redis.rpush(getQueueKey(team), queuedAttendance.id)
+      await queueClient.rpush(getQueueKey(team), queuedAttendance.id)
 
       return queuedAttendance
     }
@@ -111,17 +111,23 @@ class AttendanceService {
       getQueueKey(team)
     )
 
-    await Promise.all(queueKeys.map((key) => redis.del(key)))
+    await Promise.all(queueKeys.map((key) => queueClient.del(key)))
 
     for (const attendance of queuedAttendances) {
-      await redis.rpush(getQueueKey(attendance.team), attendance.id)
+      await queueClient.rpush(getQueueKey(attendance.team), attendance.id)
     }
   }
 
   async dispatchQueuedAttendances(team: Team) {
     const lockKey = getLockKey(team)
     const lockValue = `${Date.now()}`
-    const lockGranted = await redis.set(lockKey, lockValue, 'PX', 5000, 'NX')
+    const lockGranted = await queueClient.set(
+      lockKey,
+      lockValue,
+      'PX',
+      5000,
+      'NX'
+    )
 
     if (!lockGranted) {
       return
@@ -135,7 +141,7 @@ class AttendanceService {
           return
         }
 
-        const attendanceId = await redis.lpop(getQueueKey(team))
+        const attendanceId = await queueClient.lpop(getQueueKey(team))
 
         if (!attendanceId) {
           return
@@ -166,10 +172,10 @@ class AttendanceService {
         })
       }
     } finally {
-      const currentLockValue = await redis.get(lockKey)
+      const currentLockValue = await queueClient.get(lockKey)
 
       if (currentLockValue === lockValue) {
-        await redis.del(lockKey)
+        await queueClient.del(lockKey)
       }
     }
   }
