@@ -8,6 +8,9 @@ const envSchema = z.object({
   REDIS_URL: z.string().min(1).optional(),
   QUEUE_PROVIDER: z.enum(['redis', 'memory']).default('redis'),
   ALLOWED_ORIGINS: z.string().default('http://localhost:5173'),
+  HTTPS_ENABLED: z.coerce.boolean().default(false),
+  HTTPS_CERT_PATH: z.string().optional(),
+  HTTPS_KEY_PATH: z.string().optional(),
 })
 
 export const env = envSchema.parse(process.env)
