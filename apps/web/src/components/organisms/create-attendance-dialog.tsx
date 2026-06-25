@@ -26,12 +26,15 @@ const CreateAttendanceDialog = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Trigger asChild>
-        <Button>Novo atendimento</Button>
+        <Button data-cy="open-attendance-dialog">Novo atendimento</Button>
       </Dialog.Trigger>
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/35 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-sm border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[var(--shadow)] outline-none">
+        <Dialog.Content
+          data-cy="attendance-dialog"
+          className="fixed left-1/2 top-1/2 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-sm border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[var(--shadow)] outline-none"
+        >
           <div className="flex items-start justify-between gap-4">
             <div>
               <Dialog.Title className="text-2xl text-[var(--foreground)]">
@@ -51,6 +54,7 @@ const CreateAttendanceDialog = ({
             <label className="block space-y-2">
               <span className="text-sm text-[var(--foreground)]">Cliente</span>
               <Input
+                data-cy="attendance-customer-name"
                 value={values.customerName}
                 onChange={(event) =>
                   onChange('customerName', event.target.value)
@@ -62,6 +66,7 @@ const CreateAttendanceDialog = ({
             <label className="block space-y-2">
               <span className="text-sm text-[var(--foreground)]">Assunto</span>
               <Input
+                data-cy="attendance-subject"
                 value={values.subject}
                 onChange={(event) => onChange('subject', event.target.value)}
                 placeholder="Ex.: problema com cartao"
@@ -76,7 +81,11 @@ const CreateAttendanceDialog = ({
               <Dialog.Close asChild>
                 <Button variant="secondary">Cancelar</Button>
               </Dialog.Close>
-              <Button disabled={isSubmitting} onClick={() => void onSubmit()}>
+              <Button
+                data-cy="submit-attendance"
+                disabled={isSubmitting}
+                onClick={() => void onSubmit()}
+              >
                 {isSubmitting ? 'Salvando...' : 'Distribuir atendimento'}
               </Button>
             </div>

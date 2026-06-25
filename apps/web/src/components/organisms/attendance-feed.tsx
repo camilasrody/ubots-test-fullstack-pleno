@@ -33,10 +33,11 @@ const AttendanceFeed = ({
         </div>
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div data-cy="attendance-feed" className="mt-5 space-y-3">
         {attendances.map((attendance) => (
           <article
             key={attendance.id}
+            data-cy="attendance-item"
             className="rounded-sm border border-[var(--border)] bg-[var(--surface-strong)] p-4"
           >
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">

@@ -70,7 +70,10 @@ const DashboardPage = ({
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 md:px-6 md:py-10">
+    <main
+      data-cy="dashboard-page"
+      className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 md:px-6 md:py-10"
+    >
       <section className="rounded-sm border border-[var(--border)] bg-[var(--surface)] px-5 py-6 shadow-[var(--shadow)] backdrop-blur md:px-8 md:py-8">
         <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
