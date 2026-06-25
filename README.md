@@ -64,7 +64,26 @@ Distribuir atendimentos entre times de Cartoes, Emprestimos e Outros Assuntos, r
 - `npm run lint`
 - `npm run typecheck`
 - `npm run test`
+- `npm run test:e2e`
 - `npm run build`
+
+## Testes extras entregues
+
+- Teste de integracao de API no backend validando a rota `POST /api/attendances` com `supertest`
+- Teste unitario no frontend validando o schema do formulario com Vitest
+- Teste de integracao no frontend renderizando o dashboard com providers reais e `fetch` mockado
+- Teste E2E com Cypress cobrindo o fluxo de criacao de atendimento pelo dashboard
+- Estrutura E2E modularizada com POM em `apps/web/tests/e2e/cypress/pages` e COM em `apps/web/tests/e2e/cypress/components`
+- Reaproveitamento de mocks e comandos customizados em `apps/web/tests/e2e/cypress/support/commands.js`
+
+## Seguranca e transporte
+
+- A API e REST
+- O trafego nao fica criptografado por padrao no ambiente local porque o setup default usa HTTP
+- Existe suporte a HTTPS na API por variaveis de ambiente `HTTPS_ENABLED`, `HTTPS_CERT_PATH` e `HTTPS_KEY_PATH`
+- Mitigacao de SQL injection via Prisma, validacao de entrada com Zod e ausencia de concatenacao manual de SQL nas rotas atuais
+- Mitigacao de HTML e JavaScript injection com sanitizacao de campos textuais no backend, escaping padrao do React no frontend e CSP no `index.html`
+- Endurecimento adicional com `helmet`, `cors` com allowlist, `express-rate-limit`, `x-powered-by` desabilitado, limite de payload JSON e `referrerPolicy` no cliente
 
 ## Nice to have entregues
 
@@ -74,3 +93,7 @@ Distribuir atendimentos entre times de Cartoes, Emprestimos e Outros Assuntos, r
 - Headers de seguranca, CORS configuravel e rate limit na API
 - Fila em Redis para ambiente principal e fallback em memoria para ambiente local
 - Layout modular com componentes reutilizaveis e variantes estilo shadcn
+- Suite de testes com unitario, integracao e E2E em Cypress
+- Suite de testes tambem no frontend com Vitest
+- Backend mantido com apenas um teste de API considerado critico
+- Estrutura de E2E reaproveitavel com POM e COM
